@@ -32,6 +32,11 @@ python -m pytest tests -q
 python -m app.api.service          # http://127.0.0.1:8000/docs
 ```
 
+> **环境提示**：本项目需要 Python 3.10+ 与 `pydantic>=2.7`。
+> 如果 `ModuleNotFoundError: No module named 'pydantic'`，
+> 说明当前解释器的 site-packages 被重置过，执行 `pip install -r requirements.txt` 即可恢复。
+> 用 `python -c "import pydantic; print(pydantic.VERSION)"` 可快速确认。
+
 默认使用 **mock LLM provider**（本地启发式实现），全流程离线可跑。
 接入真实 LLM/VLM：
 

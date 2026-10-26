@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>作品集 · 食品合规与安全领域 AI 应用</title>
+<style>
+  :root{
+    --bg:#f7f8fa; --card:#ffffff; --ink:#1a1d23; --muted:#5b6472;
+    --line:#e4e7ec; --brand:#0f766e; --brand-soft:#ecfdf5;
+    --warn:#b45309; --warn-soft:#fffbeb; --red:#b91c1c; --red-soft:#fef2f2;
+    --blue:#1d4ed8; --blue-soft:#eff6ff;
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0; background:var(--bg); color:var(--ink);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;
+    line-height:1.7; -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:980px;margin:0 auto;padding:0 24px 80px}
+  header{padding:64px 0 40px;border-bottom:1px solid var(--line);margin-bottom:44px}
+  h1{font-size:2.1rem;margin:0 0 12px;letter-spacing:-.02em;font-weight:700}
+  .tagline{font-size:1.05rem;color:var(--muted);margin:0 0 24px;max-width:660px}
+  .badges{display:flex;flex-wrap:wrap;gap:8px}
+  .badge{
+    font-size:.78rem;padding:4px 11px;border-radius:999px;
+    background:var(--card);border:1px solid var(--line);color:var(--muted);
+  }
+  .badge.on{background:var(--brand-soft);border-color:#a7f3d0;color:var(--brand);font-weight:600}
+  h2{font-size:1.35rem;margin:52px 0 18px;font-weight:650;letter-spacing:-.01em}
+  h2 .n{
+    display:inline-flex;align-items:center;justify-content:center;
+    width:26px;height:26px;border-radius:7px;background:var(--ink);color:#fff;
+    font-size:.82rem;margin-right:10px;vertical-align:2px;
+  }
+  .card{
+    background:var(--card);border:1px solid var(--line);border-radius:12px;
+    padding:26px 28px;margin-bottom:18px;
+  }
+  .card h3{margin:0 0 4px;font-size:1.12rem;font-weight:650}
+  .meta{color:var(--muted);font-size:.85rem;margin:0 0 16px}
+  .meta span+span::before{content:"·";margin:0 8px;opacity:.5}
+  .pain{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:18px 0}
+  .pain>div{border-radius:9px;padding:14px 16px;font-size:.9rem}
+  .pain .before{background:var(--red-soft);border:1px solid #fecaca}
+  .pain .after{background:var(--brand-soft);border:1px solid #a7f3d0}
+  .pain b{display:block;margin-bottom:6px;font-size:.82rem;letter-spacing:.03em;text-transform:uppercase}
+  .pain .before b{color:var(--red)} .pain .after b{color:var(--brand)}
+  table{width:100%;border-collapse:collapse;font-size:.9rem;margin:16px 0}
+  th,td{text-align:left;padding:9px 12px;border-bottom:1px solid var(--line);vertical-align:top}
+  th{font-weight:600;color:var(--muted);font-size:.8rem;text-transform:uppercase;letter-spacing:.04em}
+  tr:last-child td{border-bottom:none}
+  code{
+    background:#f2f4f7;padding:1.5px 6px;border-radius:5px;
+    font-family:"SFMono-Regular",Consolas,monospace;font-size:.86em;
+  }
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+  .stat{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:18px 20px}
+  .stat .v{font-size:1.7rem;font-weight:700;letter-spacing:-.02em;line-height:1.2}
+  .stat .l{font-size:.82rem;color:var(--muted);margin-top:2px}
+  .stat .note{font-size:.76rem;color:var(--warn);margin-top:6px}
+  ul.tight{margin:10px 0;padding-left:20px}
+  ul.tight li{margin:5px 0}
+  .note{
+    background:var(--warn-soft);border:1px solid #fde68a;border-left:3px solid var(--warn);
+    border-radius:8px;padding:14px 18px;font-size:.88rem;margin:18px 0;
+  }
+  .note b{color:var(--warn)}
+  .ok{
+    background:var(--blue-soft);border:1px solid #bfdbfe;border-left:3px solid var(--blue);
+    border-radius:8px;padding:14px 18px;font-size:.88rem;margin:18px 0;
+  }
+  .gates{display:grid;gap:10px;margin:16px 0}
+  .gate{
+    background:var(--card);border:1px solid var(--line);border-radius:9px;
+    padding:13px 16px;font-size:.9rem;display:flex;gap:12px;align-items:flex-start;
+  }
+  .gate .no{
+    flex:none;width:22px;height:22px;border-radius:6px;background:var(--ink);color:#fff;
+    display:flex;align-items:center;justify-content:center;font-size:.72rem;font-weight:700;margin-top:1px;
+  }
+  .gate b{color:var(--brand)}
+  .flow{font-family:"SFMono-Regular",Consolas,monospace;font-size:.82rem;line-height:1.9;
+    background:#0f172a;color:#e2e8f0;padding:18px 20px;border-radius:10px;overflow-x:auto;margin:16px 0}
+  .flow .hl{color:#6ee7b7;font-weight:600}
+  .flow .dim{color:#94a3b8}
+  footer{margin-top:64px;padding-top:28px;border-top:1px solid var(--line);color:var(--muted);font-size:.85rem}
+  .links a{color:var(--brand);text-decoration:none;margin-right:16px;font-weight:500}
+  .links a:hover{text-decoration:underline}
+  @media(max-width:720px){
+    .pain,.grid2{grid-template-columns:1fr}
+    h1{font-size:1.65rem} header{padding:40px 0 28px}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <h1>食品合规与安全领域的 AI 应用作品集</h1>
+  <p class="tagline">
+    三套可运行的系统：把<strong>食品工厂巡检整改</strong>、<strong>消防执法</strong>、
+    <strong>食品研发</strong>三个真实业务场景，用 Agent 编排、规则闸门和评测体系做成工程化交付。
+    贯穿其中的原则是——<strong>LLM 做抽取检索与语义核验，规则做判定与放行，决策权保留在人手里。</strong>
+  </p>
+  <div class="badges">
+    <span class="badge on">LangGraph</span>
+    <span class="badge on">FastAPI</span>
+    <span class="badge on">Pydantic v2</span>
+    <span class="badge on">RAG · 向量+BM25+RRF</span>
+    <span class="badge on">VLM</span>
+    <span class="badge on">YOLO · OCR · ASR/TTS</span>
+    <span class="badge on">PostgreSQL · Redis · Docker</span>
+    <span class="badge on">pytest · GitHub Actions</span>
+    <span class="badge">GPR · 贝叶斯优化 · SHAP</span>
+  </div>
+</header>
+
+<h2><span class="n">1</span>巡检整改多Agent闭环系统</h2>
+<div class="card">
+  <h3>食品工厂巡检整改 · 条款映射 / 风险分级 / 证据验证</h3>
+  <p class="meta">
+    <span>全栈 + Agent 架构 + 产品设计</span><span>独立完成</span><span>5,381 行 Python</span>
+    <span>31 个单元测试</span><span>16 个 API 端点</span>
+  </p>
+
+  <p>
+    针对食品工厂巡检的三个痛点——问题与 HACCP 条款对不上、人工分级易错、整改口头答应表上假改——
+    构建由三个专业 Agent 组成的整改闭环系统。架构采用
+    <strong>Orchestrator + 共享状态 + 条件路由 + 硬闸门 + Human-in-the-loop</strong>，
+    Agent 之间不直接对话，只读写经 Pydantic 约束的共享状态。
+  </p>
+
+  <div class="pain">
+    <div class="before">
+      <b>改造前</b>
+      巡检员手写记录 → 班组长翻 SSOP 手册查条款（20–40 分钟/条）→ 凭经验定 A/B/C
+      → 口头交代整改 → 交张照片就签字 → 超时没人催
+    </div>
+    <div class="after">
+      <b>改造后</b>
+      自动结构化录入 → RAG 召回 Top-3 条款供选 → 20 条规则判定并留痕
+      → 自动派单含必交证据清单 → 五道闸门验证据 → 超时按级自动上推
+    </div>
+  </div>
+
+  <h3 style="font-size:1rem;margin-top:24px">三条写进代码的硬闸门</h3>
+  <div class="gates">
+    <div class="gate"><span class="no">1</span><div>低置信度条款映射<b>不得自动定级</b>——必须人工选条款，绕过时抛 <code>TransitionError</code></div></div>
+    <div class="gate"><span class="no">2</span><div>A级 / CCP 问题<b>不得仅凭照片关闭</b>——无论自动校验结果如何，强制人工现场复核</div></div>
+    <div class="gate"><span class="no">3</span><div>打回整改<b>不重置倒计时</b>——只增加无效整改次数，否则整改人最优策略是"随便交点被打回，倒计时一重置再拖几天"</div></div>
+  </div>
+
+  <h3 style="font-size:1rem;margin-top:24px">RAG 流水线与置信度合成</h3>
+  <div class="flow">
+<span class="dim">巡检口语描述</span>
+  → <span class="hl">①</span> 查询要素抽取（失败字段留空不阻断）
+  → <span class="hl">②</span> 元数据硬过滤（zone→process→hazard 逐层放宽）
+  → <span class="hl">③</span> 向量 + BM25 双路召回
+  → <span class="hl">④</span> RRF 融合（k=60，只看排名不看分数）
+  → <span class="hl">⑤</span> rerank 取 Top-5
+  → <span class="hl">⑥</span> 置信度多信号合成
+  → <span class="hl">⑦</span> 三档分流：预填 / 人工选Top-3 / 显式弃答
+  </div>
+
+  <p style="font-size:.9rem;color:var(--muted)">
+    置信度由 <strong>rerank 分数 + 双路一致性 + 元数据匹配</strong> 三路信号合成，
+    不用单一向量分数——单分数区分不了"检索偏了导致高分错配"（最危险，会误导分级）
+    和"条款库缺项导致全都不高"（该转人工补库）。
+    命中 CCP 条款<b>不额外加分，但强制人工确认</b>。
+  </p>
+
+  <div class="grid2" style="margin-top:20px">
+    <div class="stat">
+      <div class="v">96.3%</div>
+      <div class="l">条款映射 Top-3 命中率</div>
+      <div class="note">27 条人工标注样本</div>
+    </div>
+    <div class="stat">
+      <div class="v">3.7%</div>
+      <div class="l">错误预填率</div>
+      <div class="note">约束性指标，优先压低</div>
+    </div>
+    <div class="stat">
+      <div class="v">100%</div>
+      <div class="l">A级召回率</div>
+      <div class="note">22 条同源样本，仅验证逻辑正确性</div>
+    </div>
+    <div class="stat">
+      <div class="v">0%</div>
+      <div class="l">真整改误杀率</div>
+      <div class="note">120 条构造样本，真实场景目标 &lt;5%</div>
+    </div>
+  </div>
+
+  <div class="ok">
+    <strong>可复现验证：</strong>
+    <code>python scripts/demo_end_to_end.py</code> 跑通 4 个场景——
+    其中「旧图复用被打回且 deadline 前后完全一致」和「低置信度下自动分级被当场拦截」
+    演示的是<strong>约束生效</strong>，不是功能可用。
+  </div>
+</div>
+
+<h2><span class="n">2</span>消防智能执法多模态 Agent 系统</h2>
+<div class="card">
+  <h3>法规问答 · 多模态案件分析 · 法律文书自动生成</h3>
+  <p class="meta">
+    <span>Agent 架构 + 后端 + 工程化</span><span>独立完成</span>
+    <span>13,271 行 Python</span><span>98 个测试函数</span><span>8 次规范提交</span><span>GitHub Actions CI</span>
+  </p>
+
+  <p>
+    面向消防执法场景的多模态系统。网关统一鉴权审计、三级级联路由、三态熔断降级、
+    LangGraph 状态图编排、人机协同审批流——不是单点 Demo，而是有工程约束的完整系统。
+  </p>
+
+  <div class="grid2" style="margin:20px 0">
+    <div>
+      <h3 style="font-size:.98rem">工程化能力</h3>
+      <ul class="tight">
+        <li><strong>三态熔断</strong> <code>closed / open / half-open</code>，下游挂掉时降级而非整体卡死</li>
+        <li><strong>统一鉴权</strong> 内部 Token 常数时间比较防时序攻击，clearance 越界收敛</li>
+        <li><strong>提交历史</strong> 安全修复 → 测试补齐 → CI 引入 → 文档重写，按优先级排序</li>
+        <li><strong>日志迁移</strong> 270 处 <code>print</code> 全量转 <code>logging</code>（单次提交）</li>
+      </ul>
+    </div>
+    <div>
+      <h3 style="font-size:.98rem">业务侧设计</h3>
+      <ul class="tight">
+        <li><strong>文书改动检测 Agent</strong> 自动 diff 原稿与人工改后稿，解决四个审批盲区</li>
+        <li><strong>三级字段分流</strong> 事实 / 法律 / 待补充——第三类留空标记，<strong>绝不编造条款</strong></li>
+        <li><strong>视觉隐患识别</strong> YOLO + OCR + 多模态大模型综合判断，输出分级告警</li>
+        <li><strong>语音交互</strong> 讯飞听写 / Whisper 离线识别 + 多引擎 TTS</li>
+      </ul>
+    </div>
+  </div>
+
+  <h3 style="font-size:1rem;margin-top:22px">RAG 调优：5 轮迭代的完整归因</h3>
+  <p style="font-size:.92rem">
+    起点 <code>context_precision 0.165</code>，但"低在哪、为什么低"完全未知。
+    先把评测集从 5 条扩到 <strong>47 条人工标注</strong>（三个维度分层），再动手优化。
+  </p>
+
+  <div class="note">
+    <b>踩到的第一个陷阱：</b>扩充评测集后总分从 0.95 掉到 0.48，第一反应是"代码退化了"。
+    分层统计后发现<b>老 7 条 recall 仍是 1.000，新加 40 条只有 0.444</b>——是样本拉低了总分，不是代码退化。
+    <b>方法论：指标变化必须先归因到"样本变化"还是"代码变化"。</b>
+  </div>
+
+  <table>
+    <tr><th>指标</th><th>v6</th><th>v7</th><th>变化</th></tr>
+    <tr><td>answer_relevancy</td><td>0.579</td><td><strong>0.706</strong></td><td><strong>+0.127</strong></td></tr>
+    <tr><td>faithfulness</td><td>0.985</td><td>0.985</td><td>0.000（未牺牲）</td></tr>
+    <tr><td>context_recall</td><td>0.527</td><td>0.548</td><td>+0.021</td></tr>
+    <tr><td>弃答条数</td><td>34</td><td>11</td><td><strong>−23</strong></td></tr>
+    <tr><td>过度保守</td><td>14</td><td>2</td><td>−12</td></tr>
+  </table>
+
+  <p style="font-size:.9rem;color:var(--muted)">
+    <strong>"多作答不换来幻觉"</strong>——少弃答 23 条，faithfulness 一条没掉。
+    这推翻了我原本"少答更安全"的假设，而<strong>推翻假设本身是产出</strong>。
+  </p>
+</div>
+
+<h2><span class="n">3</span>食品研发智能决策系统</h2>
+<div class="card">
+  <h3>配方优化 · 货架期预测</h3>
+  <p class="meta">
+    <span>建模 · 优化算法 · 可解释性</span><span>毕业设计延伸</span><span>29 组实验数据</span>
+  </p>
+
+  <div class="pain">
+    <div class="before">
+      <b>改造前</b>
+      配方靠经验试错；保质期靠经验拍脑袋，没有可解释的量化依据。
+    </div>
+    <div class="after">
+      <b>改造后</b>
+      GPR 拟合响应面 + 贝叶斯优化定向推荐；Logistic 生长模型给出可执行的保质期天数。
+    </div>
+  </div>
+
+  <div class="grid2" style="margin-top:18px">
+    <div class="stat">
+      <div class="v">R² 0.642</div>
+      <div class="l">配方回归（留一验证）· MAE 1.93 分</div>
+      <div class="note">推荐 5 个新配方，预测评分高于实验最优值</div>
+    </div>
+    <div class="stat">
+      <div class="v">R² 0.9915</div>
+      <div class="l">货架期 Logistic 模型</div>
+      <div class="note">预测 7.4 天达 10⁵ CFU/g，与实验观察一致</div>
+    </div>
+  </div>
+
+  <div class="ok">
+    <strong>最核心的技术判断：</strong>
+    单因素实验（局部变化）与正交实验（全局变化）<strong>数据生成机制不统一</strong>，
+    混在一起建模 R² 会变负。分层处理——单因素用二次拟合、正交用 GPR——才有了 0.64。
+    选 GPR 而非随机森林，是因为<b>贝叶斯优化需要不确定性估计</b>，这是对下游任务的考量。
+  </div>
+</div>
+
+<h2><span class="n">4</span>AI 协作方式</h2>
+<div class="card">
+  <h3>分层委派：翻译型交给 AI，判断型自己扛</h3>
+  <p>
+    我的协作方式不是"让 AI 写完我检查"，而是按任务性质分层：
+    <strong>翻译型</strong>（写模型、实现检索、补测试）交给 AI 提高速度；
+    <strong>判断型</strong>（该做成什么样、哪些约束不可绕过）我自己决定。
+  </p>
+
+  <div class="grid2" style="margin-top:20px">
+    <div>
+      <h3 style="font-size:.98rem">四道质量门禁（会失败，不是走过场）</h3>
+      <ul class="tight">
+        <li><strong>单元测试</strong> 105 个用例（31 + 74），重点是反向测试</li>
+        <li><strong>端到端演示</strong> 4 个真实场景，覆盖全部硬闸门</li>
+        <li><strong>离线评测</strong> 三套评测 + 阈值网格搜索，输出指标报告</li>
+        <li><strong>CI</strong> GitHub Actions 推送自动跑测试与代码规范</li>
+      </ul>
+    </div>
+    <div>
+      <h3 style="font-size:.98rem">实际踩过的坑（都是真卡住过的）</h3>
+      <ul class="tight">
+        <li>状态机漏边 + 异常被静默吞掉 → 输出"全绿"但流程全卡住</li>
+        <li>路径层级少算一级 → 数据落到错误目录，不报错只存错地方</li>
+        <li>AI 倾向"把不确定当通过" → 无 EXIF 被直接打回，会误杀真整改</li>
+        <li>指标漂亮得不像话 → 22 条同源样本，只能验证逻辑不能验证泛化</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="note">
+    <b>关于 AI 署名：</b>两个项目的 git 历史都保留了 <code>Co-Authored-By</code> 标注，
+    这是<b>主动披露而非隐藏</b>。我负责的是需求拆解、架构决策、硬约束设计和最终验证——
+    比如"打回不重置倒计时"这条业务规则，是我在设计时推导出后果后要求写进代码的，
+    AI 负责把它翻译成实现和测试。
+  </div>
+</div>
+
+<h2><span class="n">5</span>AI 使用强度</h2>
+<div class="card">
+  <h3>2026-10-13 ~ 10-26 · 10 个工作日 · 实测统计</h3>
+  <p class="meta">数据来自本机 WorkBuddy 会话日志，可自行复现</p>
+
+  <div class="grid2">
+    <div class="stat">
+      <div class="v">≈1.00B</div>
+      <div class="l">总上下文处理量（tokens）</div>
+      <div class="note">506.1M 输入 + 495.1M 缓存命中</div>
+    </div>
+    <div class="stat">
+      <div class="v">1.31M</div>
+      <div class="l">模型实际输出（tokens）</div>
+      <div class="note">日均约 131K</div>
+    </div>
+    <div class="stat">
+      <div class="v">2,909</div>
+      <div class="l">工具调用次数</div>
+      <div class="note">日均 291 次，峰值单日 812 次</div>
+    </div>
+    <div class="stat">
+      <div class="v">53.4%</div>
+      <div class="l">Bash 占比（跑测试/评测/演示）</div>
+      <div class="note">重心在验证而非生成</div>
+    </div>
+  </div>
+
+  <p style="font-size:.9rem;color:var(--muted);margin-top:18px">
+    工具分布：Bash 1,554 · Edit 570 · Write 313 · Read 238 · TaskOutput 67 · 其余 167。
+    <strong>Edit 超过 Write</strong>，说明迭代修改多于从零新建，符合真实开发节奏；
+    <strong>Bash 占一半</strong>，说明持续在跑验证，而不是让 AI 写完就收工。
+  </p>
+</div>
+
+<h2><span class="n">6</span>边界声明</h2>
+<div class="card">
+  <p style="margin-top:0">
+    把话说清楚，比说得漂亮更有用。以下是<strong>本作品集内所有系统共同的边界</strong>：
+  </p>
+  <ul class="tight">
+    <li><strong>未在真实生产环境部署</strong>——有 Dockerfile 与编排配置，但没在工厂/客户环境跑过</li>
+    <li><strong>默认跑 mock LLM/VLM</strong>——接口已就绪（OpenAI 兼容协议），真实模型接入后行为会有差异</li>
+    <li><strong>向量检索为自实现 hashing 投影</strong>，非 ChromaDB/FAISS——为保证离线可跑，替换只需覆盖一个方法</li>
+    <li><strong>条款库是内置 15 条示例</strong>，非企业真实 HACCP 计划</li>
+    <li><strong>评测样本量小且部分同源</strong>——分级 100% 一致率仅验证逻辑正确性，真实泛化需独立标注 100–200 条复核</li>
+    <li><strong>无真实人力节省数据</strong>——指标采集接口已实现，但没有真实数据源，不编这个数</li>
+    <li><strong>三个项目均为个人独立完成</strong>——团队协作经验不足，这是我明确知道的短板</li>
+  </ul>
+</div>
+
+<footer>
+  <div class="links">
+    <a href="#">GitHub 仓库 ×2</a>
+    <a href="#">项目 README</a>
+    <a href="#">架构文档</a>
+    <a href="#">评测报告</a>
+    <a href="#">面试材料</a>
+  </div>
+  <p style="margin-top:14px">
+    贯穿三个项目的一句话：<strong>不是让 AI 替人判断，而是让系统接住那些耗人又容易出错的事，
+    把决策权留在人手里。</strong>
+  </p>
+</footer>
+
+</div>
+</body>
+</html>
