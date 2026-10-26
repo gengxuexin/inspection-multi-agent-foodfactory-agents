@@ -1,0 +1,221 @@
+下面把条款映射Agent细化到伪代码级。核心难点是**巡检口语化描述与HACCP/法规书面条款之间的语义鸿沟**，所以流程不是“拿一句话去向量库搜一下”，而是：先做**查询要素抽取**，再用**元数据硬过滤**缩小范围，然后**向量+BM25双路召回**，用**RRF融合**，再**rerank**，最后用**多信号合成置信度**决定预填、转人工还是弃答。
+
+---
+
+## 1. 知识库构建：条款级分块，不做固定长度切分
+
+```python
+# 离线一次性构建
+for doc in [HACCP计划, SSOP, GMP, 供应商验收标准, 清洁消毒SOP, 异物防控程序, 标签法规]:
+    clauses = parse_by_clause(doc)          # 按条款编号切，不按token切
+    for c in clauses:
+        chunk = {
+            "clause_id": c.id,               # 如 CCP-02, SSOP-4.3
+            "text": c.full_text,             # 条款原文，完整保留
+            "summary": llm_summarize(c),     # 仅用于检索的长条款摘要块
+            "source_doc": doc.name,
+            "version": doc.version,
+            "effective_date": doc.effective_date,
+            "zone": c.zone,                  # 适用区域/工位，可为多值
+            "process": c.process,            # 适用工序
+            "is_ccp": c.is_ccp,
+            "hazard_type": c.hazard_type,    # 生物/化学/物理/过敏原/卫生/记录
+            "question_category": c.qcat,     # 预定义问题类别标签
+        }
+        index.add(chunk)                     # 向量库 + BM25索引同步写入
+```
+
+要点：
+- **一个条款一个chunk**，长条款额外生成摘要块，但**召回时原文块优先**，摘要块只做补充召回。
+- 元数据里的 `zone / process / is_ccp / hazard_type` 是后面硬过滤的依据，必须由质量部在导入时人工校验一遍，不能全靠模型抽。
+- 条款版本和生效日期必须保留，避免引用过期条款。
+
+---
+
+## 2. 在线检索主流程
+
+```python
+def map_clause(issue, top_k=10):
+    # Step 1: 查询要素抽取（LLM + schema约束）
+    q = llm_extract(issue.raw_text, schema=QuerySchema)
+    # q = {
+    #   "phenomenon": "地面积水",
+    #   "object": "地面/排水口",
+    #   "zone": "前处理间",
+    #   "process": "清洗",
+    #   "deviation_type": "清洁不彻底/积水",
+    #   "hazard_guess": "生物",
+    #   "keywords": ["积水", "清洁", "排水"]
+    # }
+    # 抽取失败字段留空，不阻断流程
+
+    # Step 2: 元数据硬过滤（缩小候选池）
+    filters = {}
+    if q.zone:     filters["zone"] = q.zone
+    if q.process:  filters["process"] = q.process
+    if q.hazard_guess: filters["hazard_type"] = q.hazard_guess
+
+    candidates = index.filter(filters)        # 若过滤后 < 20 条，逐步放宽 filters
+    if len(candidates) < 20:
+        candidates = index.filter(relax(filters))
+
+    # Step 3: 双路召回
+    vec_hits  = vector_search(q.phenomenon + q.keywords, candidates, k=top_k)
+    bm25_hits = bm25_search(" ".join(q.keywords), candidates, k=top_k)
+
+    # Step 4: RRF融合
+    fused = rrf_fuse([vec_hits, bm25_hits], k=60)   # 取融合后 top_k
+
+    # Step 5: rerank（cross-encoder 或 LLM listwise）
+    ranked = rerank(query=issue.raw_text, docs=fused, top_n=5)
+
+    # Step 6: 置信度合成 + 分流
+    results = []
+    for r in ranked:
+        conf = confidence(r.rerank_score, r.vec_score, r.bm25_score,
+                          q, r.chunk)
+        results.append({
+            "clause_id": r.chunk.clause_id,
+            "source": r.chunk.source_doc,
+            "version": r.chunk.version,
+            "text_snippet": r.chunk.text,
+            "confidence": round(conf, 2),
+            "reason": r.explain           # rerank/LLM 给出的匹配理由
+        })
+
+    return route_by_threshold(results)
+```
+
+---
+
+## 3. 置信度怎么算（不要只用向量分数）
+
+```python
+def confidence(rerank_s, vec_s, bm25_s, q, chunk):
+    # 1) rerank分数归一化到0-1（按模型分数区间）
+    base = normalize(rerank_s)
+
+    # 2) 双路一致性加分：向量和BM25都靠前，说明语义和关键词都对上
+    if vec_s > P70 and bm25_s > P70:
+        base += 0.10
+
+    # 3) 元数据匹配加分
+    if q.zone and q.zone in chunk.zone:       base += 0.05
+    if q.process and q.process in chunk.process: base += 0.05
+    if q.hazard_guess == chunk.hazard_type:   base += 0.05
+
+    # 4) CCP相关问题：命中CCP条款不额外加分，但强制走人工确认
+    return min(base, 1.0)
+```
+
+阈值分流：
+
+```python
+def route_by_threshold(results):
+    top = results[0]
+    if top.confidence >= HIGH_TH:              # 建议0.75
+        return {"mode": "prefill", "items": results[:3]}
+    elif top.confidence >= MID_TH:             # 建议0.50
+        return {"mode": "human_select", "items": results[:3]}
+    else:
+        return {"mode": "no_reliable_match", "items": results[:3]}
+```
+
+- `prefill`：预填第一条，巡检员可改。
+- `human_select`：展示Top-3，**必须人工选**，不预填。
+- `no_reliable_match`：不预填，提示“未匹配到可靠条款”，人工从候选选或标记“需新增条款映射”。
+- 无论哪种模式，命中 `is_ccp=True` 的条款，**等级确认强制人工**。
+
+---
+
+## 4. 输出Schema（给状态机用）
+
+```json
+{
+  "issue_id": "INS-20251017-0032",
+  "mode": "human_select",
+  "selected_clause_id": null,
+  "candidates": [
+    {
+      "clause_id": "SSOP-4.3",
+      "source": "SSOP",
+      "version": "v3.1",
+      "text_snippet": "生产结束后应彻底清洁地面及排水口，不得有积水...",
+      "confidence": 0.63,
+      "reason": "现象为地面积水，条款要求地面无积水，区域均为前处理间"
+    }
+  ],
+  "needs_human": true,
+  "retrieved_at": "2025-10-17T09:12:00+08:00",
+  "agent_version": "clause-map-v0.3"
+}
+```
+
+人工确认后写入 `selected_clause_id`、`confirmed_by`、`confirmed_at`、`original_top1`（用于后续分析“人工改选率”）。
+
+---
+
+## 5. 人工选择回流：先做样本库，不自动训练
+
+```python
+on_human_confirm(issue, candidates, selected):
+    sample = {
+        "raw_text": issue.raw_text,
+        "query_elements": q,
+        "candidates": candidates,
+        "selected_clause_id": selected,
+        "top1_was_correct": (candidates[0].clause_id == selected),
+        "mode": mode
+    }
+    sample_store.append(sample)
+```
+
+- 每周统计：**Top-1准确率、Top-3命中率、人工改选率、无可靠匹配率**。
+- `top1_was_correct=False` 的样本优先人工看，判断是检索问题、条款粒度问题，还是条款库缺项。
+- few-shot示例、阈值调整、rerank微调都基于这个样本库，**不在线自动改模型**。
+
+---
+
+## 6. 离线评测伪代码（上线前必做）
+
+```python
+eval_set = load_labeled_history(n=150)   # 人工标注正确条款
+
+for th_high, th_mid in grid([0.70,0.75,0.80], [0.45,0.50,0.55]):
+    metrics = evaluate(eval_set, th_high, th_mid)
+    # metrics: top1_acc, top3_acc, human_select_rate,
+    #          no_match_rate, wrong_prefill_rate
+```
+
+选择阈值的原则：
+- **wrong_prefill_rate 必须极低**（预填错条款比不预填更糟，会误导分级）。
+- 在 wrong_prefill_rate 可接受的前提下，尽量提高 prefill 比例，减少人工选条款负担。
+- `no_match_rate` 过高说明条款库缺项或查询抽取有问题，先补库/改抽取，不要靠降阈值硬凑。
+
+---
+
+## 7. 边界情况处理
+
+| 情况 | 处理 |
+|---|---|
+| 查询要素抽取失败 | 用原始文本直接双路召回，标注“要素缺失”，强制人工选 |
+| 过滤后候选不足 | 按 zone→process→hazard 顺序逐步放宽，记录放宽了哪一层 |
+| 多条款同时命中 | 返回Top-3，人工选主条款；允许关联多个条款ID，但主条款唯一 |
+| 条款库无对应项 | `no_reliable_match`，人工可标记“新增条款需求”，进入条款库维护队列 |
+| 条款版本冲突 | 只检索 `effective_date <= 当前日期` 的最新版本，旧版本不进入候选 |
+| 引用过期条款 | 输出时校验版本，过期则降权并提示 |
+
+---
+
+## 8. 关键参数清单
+
+| 参数 | 建议初值 | 调整依据 |
+|---|---|---|
+| 高置信度阈值 HIGH_TH | 0.75 | 离线评测 wrong_prefill_rate |
+| 中置信度阈值 MID_TH | 0.50 | human_select_rate 与人工负担 |
+| 双路召回各 k | 10 | 候选池大小与rerank成本 |
+| rerank top_n | 5 | 人工选择展示条数 |
+| RRF k | 60 | 常规默认，可不动 |
+| 元数据过滤放宽阈值 | 候选<20 | 工厂条款库规模 |
+
+这套逻辑跑通后，条款映射Agent的输出就直接喂给风险分级Agent：**规则表先判等级，LLM只在边界情况给建议，A级和CCP相关强制人工确认**。如果你需要，下一步我可以把风险分级Agent的规则表写成可执行的决策表（条件→等级→是否人工确认→理由模板）。

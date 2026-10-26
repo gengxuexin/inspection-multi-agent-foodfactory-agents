@@ -1,0 +1,293 @@
+[
+  {
+    "clause_id": "CCP-01",
+    "text": "冷藏工序CCP：产品中心温度须控制在0~4℃，每2小时监测并记录；超出关键限值CL=4℃时须立即隔离产品、启动纠偏并记录。",
+    "source": "HACCP计划",
+    "version": "v3.2",
+    "effective_date": "2025-01-01",
+    "zone": [
+      "冷库",
+      "灌装间"
+    ],
+    "process": [
+      "冷却",
+      "冷链"
+    ],
+    "is_ccp": true,
+    "hazard_type": "生物",
+    "question_category": "温度记录缺失/断链",
+    "critical_limit": "中心温度≤4℃",
+    "summary": ""
+  },
+  {
+    "clause_id": "CCP-02",
+    "text": "发酵工序CCP：pH须控制在3.8~4.2范围，每批监测；pH超出CL=4.2须隔离并评估。",
+    "source": "HACCP计划",
+    "version": "v3.2",
+    "effective_date": "2025-01-01",
+    "zone": [
+      "发酵间"
+    ],
+    "process": [
+      "发酵"
+    ],
+    "is_ccp": true,
+    "hazard_type": "生物",
+    "question_category": "发酵pH超限",
+    "critical_limit": "pH≤4.2",
+    "summary": ""
+  },
+  {
+    "clause_id": "CCP-03",
+    "text": "金属探测CCP：Fe1.5mm/NonFe2.0mm/SUS2.5mm，每2小时用标准片校验，探测到异物须停线并隔离自上次校验以来全部产品。",
+    "source": "HACCP计划",
+    "version": "v3.2",
+    "effective_date": "2025-01-01",
+    "zone": [
+      "金检间",
+      "灌装间"
+    ],
+    "process": [
+      "金检"
+    ],
+    "is_ccp": true,
+    "hazard_type": "物理",
+    "question_category": "异物风险（工具/包装破损）",
+    "critical_limit": "标准片可检出",
+    "summary": ""
+  },
+  {
+    "clause_id": "SSOP-4.3",
+    "text": "生产结束后应彻底清洁地面及排水口，不得有积水；排水口每日班前检查并清洁，记录留存。",
+    "source": "SSOP",
+    "version": "v3.1",
+    "effective_date": "2025-03-01",
+    "zone": [
+      "前处理间",
+      "加工间",
+      "灌装间"
+    ],
+    "process": [
+      "清洗"
+    ],
+    "is_ccp": false,
+    "hazard_type": "卫生",
+    "question_category": "清洁不彻底/积水",
+    "critical_limit": "",
+    "summary": ""
+  },
+  {
+    "clause_id": "SSOP-2.1",
+    "text": "进入生产区域须穿戴清洁工作服、口罩、发网并洗手消毒；手套破损须立即更换，不得复用。",
+    "source": "SSOP",
+    "version": "v3.1",
+    "effective_date": "2025-03-01",
+    "zone": [
+      "更衣间",
+      "加工间",
+      "灌装间"
+    ],
+    "process": [
+      "转运"
+    ],
+    "is_ccp": false,
+    "hazard_type": "卫生",
+    "question_category": "人员卫生/着装",
+    "critical_limit": "",
+    "summary": ""
+  },
+  {
+    "clause_id": "SSOP-6.2",
+    "text": "食品接触面使用后须按CIP程序清洗、消毒并验证残留；消毒浓度或时间不足不得进入生产。",
+    "source": "SSOP",
+    "version": "v3.1",
+    "effective_date": "2025-03-01",
+    "zone": [
+      "加工间",
+      "灌装间"
+    ],
+    "process": [
+      "清洗"
+    ],
+    "is_ccp": false,
+    "hazard_type": "生物",
+    "question_category": "清洁消毒失效",
+    "critical_limit": "",
+    "summary": ""
+  },
+  {
+    "clause_id": "SSOP-8.4",
+    "text": "捕鼠器、粘鼠板、风幕机须每周检查并记录，设施破损须24小时内修复。",
+    "source": "SSOP",
+    "version": "v3.1",
+    "effective_date": "2025-03-01",
+    "zone": [
+      "仓库",
+      "加工间",
+      "内包材库"
+    ],
+    "process": [
+      "入库"
+    ],
+    "is_ccp": false,
+    "hazard_type": "生物",
+    "question_category": "虫害设施异常",
+    "critical_limit": "",
+    "summary": ""
+  },
+  {
+    "clause_id": "SSOP-9.1",
+    "text": "生产记录须当场如实填写，不得补记、代签、空项；笔误须划改并签名，保持追溯链完整。",
+    "source": "SSOP",
+    "version": "v3.1",
+    "effective_date": "2025-03-01",
+    "zone": [
+      "加工间",
+      "灌装间"
+    ],
+    "process": [
+      "转运"
+    ],
+    "is_ccp": false,
+    "hazard_type": "记录",
+    "question_category": "记录缺失/笔误",
+    "critical_limit": "",
+    "summary": ""
+  },
+  {
+    "clause_id": "SSOP-5.6",
+    "text": "工具、容器定置存放，不得混用；破损工具须立即报废并留存报废记录。",
+    "source": "SSOP",
+    "version": "v3.1",
+    "effective_date": "2025-03-01",
+    "zone": [
+      "加工间",
+      "前处理间"
+    ],
+    "process": [
+      "切割",
+      "清洗"
+    ],
+    "is_ccp": false,
+    "hazard_type": "物理",
+    "question_category": "异物风险（工具/包装破损）",
+    "critical_limit": "",
+    "summary": ""
+  },
+  {
+    "clause_id": "AL-2.1",
+    "text": "标签须与配方一致，完整标注配料与过敏原信息；含麸质、乳制品、花生等致敏成分须显著标示。标签错误须隔离追溯。",
+    "source": "标签法规",
+    "version": "v2.0",
+    "effective_date": "2025-01-01",
+    "zone": [
+      "灌装间",
+      "外包材库"
+    ],
+    "process": [
+      "灌装"
+    ],
+    "is_ccp": false,
+    "hazard_type": "过敏原",
+    "question_category": "标签标识错误",
+    "critical_limit": "",
+    "summary": ""
+  },
+  {
+    "clause_id": "GMP-7.2",
+    "text": "生产设备参数须在设定值范围内；预防性维护不得逾期，校准证书须在有效期内并留存。",
+    "source": "GMP",
+    "version": "v4.0",
+    "effective_date": "2025-01-01",
+    "zone": [
+      "加工间",
+      "灌装间"
+    ],
+    "process": [
+      "发酵",
+      "烘焙"
+    ],
+    "is_ccp": false,
+    "hazard_type": "化学",
+    "question_category": "设备参数漂移",
+    "critical_limit": "",
+    "summary": ""
+  },
+  {
+    "clause_id": "SUP-3.4",
+    "text": "供应商到货须经验收合格方可入库；包装变形、标签轻微不符但未影响产品安全的，须记录并反馈供应商。",
+    "source": "供应商验收标准",
+    "version": "v1.8",
+    "effective_date": "2025-02-01",
+    "zone": [
+      "仓库",
+      "外包材库"
+    ],
+    "process": [
+      "入库"
+    ],
+    "is_ccp": false,
+    "hazard_type": "化学",
+    "question_category": "供应商到货偏差",
+    "critical_limit": "",
+    "summary": ""
+  },
+  {
+    "clause_id": "AL-2.5",
+    "text": "过敏原管理：生产与换线须执行过敏原清洗；未申报过敏原或交叉接触风险须立即停线评估。",
+    "source": "标签法规",
+    "version": "v2.0",
+    "effective_date": "2025-01-01",
+    "zone": [
+      "加工间",
+      "灌装间"
+    ],
+    "process": [
+      "清洗",
+      "灌装"
+    ],
+    "is_ccp": false,
+    "hazard_type": "过敏原",
+    "question_category": "过敏原交叉污染",
+    "critical_limit": "",
+    "summary": ""
+  },
+  {
+    "clause_id": "SSOP-11.2",
+    "text": "车间照明、门窗、地面设施缺陷须及时报修；轻微缺陷不影响卫生与产品的，登记并纳入月度维护。",
+    "source": "SSOP",
+    "version": "v3.1",
+    "effective_date": "2025-03-01",
+    "zone": [
+      "加工间",
+      "更衣间",
+      "仓库"
+    ],
+    "process": [
+      "转运"
+    ],
+    "is_ccp": false,
+    "hazard_type": "卫生",
+    "question_category": "设施轻微缺陷",
+    "critical_limit": "",
+    "summary": ""
+  },
+  {
+    "clause_id": "SSOP-4.3",
+    "text": "（旧版，已作废）生产结束后清洁地面，允许少量积水。",
+    "source": "SSOP",
+    "version": "v2.0",
+    "effective_date": "2023-01-01",
+    "zone": [
+      "前处理间"
+    ],
+    "process": [
+      "清洗"
+    ],
+    "is_ccp": false,
+    "hazard_type": "卫生",
+    "question_category": "清洁不彻底/积水",
+    "critical_limit": "",
+    "summary": ""
+  }
+]

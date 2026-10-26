@@ -1,0 +1,21 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+.pytest_cache/
+
+# 运行时数据（SQLite、上传证据、评测报告）
+data/*
+!data/.gitkeep
+
+# 环境与密钥
+.env
+*.env
+
+# 编辑器 / 系统
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db

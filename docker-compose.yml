@@ -1,0 +1,23 @@
+services:
+  api:
+    build: .
+    container_name: fqa-api
+    ports:
+      - "8000:8000"
+    environment:
+      # mock（默认，离线可跑）| openai（接入真实 LLM/VLM）
+      FQA_LLM_PROVIDER: ${FQA_LLM_PROVIDER:-mock}
+      FQA_LLM_API_KEY: ${FQA_LLM_API_KEY:-}
+      FQA_LLM_MODEL: ${FQA_LLM_MODEL:-gpt-4o-mini}
+      # 条款映射阈值（用 scripts/run_eval.py 网格搜索确定）
+      FQA_MAP_HIGH_TH: ${FQA_MAP_HIGH_TH:-0.70}
+      FQA_MAP_MID_TH: ${FQA_MAP_MID_TH:-0.45}
+      # 证据验证阈值
+      FQA_EV_IMG_REJECT: ${FQA_EV_IMG_REJECT:-0.95}
+      FQA_EV_VLM_PASS: ${FQA_EV_VLM_PASS:-0.80}
+    volumes:
+      - fqa-data:/app/data
+    restart: unless-stopped
+
+volumes:
+  fqa-data:
